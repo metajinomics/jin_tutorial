@@ -29,7 +29,7 @@ Install `khmer <http://khmer.readthedocs.org/>`__:
     make install
 
 
-Install `Trimmomatic <http://www.usadellab.org/cms/?page=trimmomatic>`__:
+ `Trimmomatic <http://www.usadellab.org/cms/?page=trimmomatic>`__ 설치 :
 =======
 ::
 
@@ -41,7 +41,7 @@ Install `Trimmomatic <http://www.usadellab.org/cms/?page=trimmomatic>`__:
     cp -r adapters /usr/local/share/adapters
 
 
-Install `libgtextutils and fastx <http://hannonlab.cshl.edu/fastx_toolkit/>`__:
+`libgtextutils and fastx <http://hannonlab.cshl.edu/fastx_toolkit/>`__ 설치 :
 ::
 
     cd /root
@@ -65,7 +65,7 @@ it below.  We're then unpacking it, sometimes compiling it (which we
 can discuss later), and then installing it for general use.
 
 
-Create Your Work Directory and Link Your Data 
+폴더 생성 및 데이터 가져오기  
 ---------------------------------------------
 Put your data in /mnt/data.
 
@@ -106,7 +106,7 @@ This uncompresses each file, removes poor-quality sequences, and then recompress
 
 If fastq_quality_filter complains about invalid quality scores, try removing the -Q33 in the command; Illumina has blessed us with multiple quality score encodings.
 
-Automating This Step
+위의 과정을 자동화 하기 
 ---------------------
 
 This step can be automated with a ‘for’ loop at the shell prompt. Try:
@@ -142,7 +142,7 @@ To run it on all of the pe qc files, do:
         extract-paired-reads.py $i
     done
 
-Renaming Files
+파일 이름 바꾸기 
 ---------------
 I’m a fan of keeping the files named somewhat sensibly, and keeping them compressed. Let’s do some mass renaming:
 

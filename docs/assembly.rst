@@ -29,7 +29,7 @@ Install `khmer <http://khmer.readthedocs.org/>`__:
     make install
 
 
- `Trimmomatic <http://www.usadellab.org/cms/?page=trimmomatic>`__ 설치 :
+`Trimmomatic <http://www.usadellab.org/cms/?page=trimmomatic>`__ 설치 :
 =======
 ::
 

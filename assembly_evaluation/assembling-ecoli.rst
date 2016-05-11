@@ -15,33 +15,14 @@ Booting an Amazon AMI
 Start up an Amazon computer (m3.large or m3.xlarge) running
 Ubuntu 14.04, as in :doc:`amazon/index`, and log in.
 
-Logging in
-==========
 
-Log in and type::
-
-   sudo apt-get update && \
-   sudo apt-get -y install screen git curl gcc make g++ python-dev unzip \
-              default-jre pkg-config libncurses5-dev r-base-core \
-              r-cran-gplots python-matplotlib sysstat python-virtualenv \
-              python-setuptools cmake
-
-to update the computer with all the bundled software you'll need.
-
-At this time, you might also make /mnt writeable::
-
-   sudo chmod a+rwxt /mnt
 
 Packages to install
 ===================
 
 Install `khmer <http://khmer.readthedocs.org/>`__::
 
-   cd
-   python -m virtualenv env
-   source env/bin/activate
-   pip install -U setuptools
-   pip install khmer==1.4.1
+   pip install khmer
 
 and download and compile the SPAdes assembler::
 
@@ -108,20 +89,28 @@ You should see::
 
    All statistics are based on contigs of size >= 500 bp, unless otherwise noted (e.g., "# contigs (>= 0 bp)" and "Total length (>= 0 bp)" include all contigs).
 
-   Assembly                   scaffolds
-   # contigs (>= 0 bp)        160      
-   # contigs (>= 1000 bp)     84       
-   Total length (>= 0 bp)     4571783  
-   Total length (>= 1000 bp)  4551354  
-   # contigs                  93       
-   Largest contig             264754   
-   Total length               4557807  
-   GC (%)                     50.75    
-   N50                        132618   
-   N75                        64692    
-   L50                        12       
-   L75                        24       
-   # N's per 100 kbp          0.00     
+   Assembly                    scaffolds
+   # contigs (>= 0 bp)         151      
+   # contigs (>= 1000 bp)      80       
+   # contigs (>= 5000 bp)      56       
+   # contigs (>= 10000 bp)     52       
+   # contigs (>= 25000 bp)     45       
+   # contigs (>= 50000 bp)     29       
+   Total length (>= 0 bp)      4570059  
+   Total length (>= 1000 bp)   4551979  
+   Total length (>= 5000 bp)   4497489  
+   Total length (>= 10000 bp)  4467797  
+   Total length (>= 25000 bp)  4364873  
+   Total length (>= 50000 bp)  3821744  
+   # contigs                   88       
+   Largest contig              285527   
+   Total length                4557687  
+   GC (%)                      50.75    
+   N50                         133088   
+   N75                         67337    
+   L50                         12       
+   L75                         23       
+   # N's per 100 kbp           0.00     
 
 Comparing and evaluating assemblies - QUAST
 ===========================================

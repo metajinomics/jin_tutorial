@@ -46,11 +46,10 @@ Install `khmer <http://khmer.readthedocs.org/>`__::
 and download and compile the SPAdes assembler::
 
    cd
-   curl -O http://spades.bioinf.spbau.ru/release3.5.0/SPAdes-3.5.0.tar.gz
-   tar xvf SPAdes-3.5.0.tar.gz
-   cd SPAdes-3.5.0
-   ./spades_compile.sh
-   export PATH="$PATH:$(pwd)/bin"
+   wget http://spades.bioinf.spbau.ru/release3.7.1/SPAdes-3.7.1-Linux.tar.gz
+   tar -xzf SPAdes-3.7.1-Linux.tar.gz
+   export PATH=~/SPAdes-3.7.1-Linux/bin/:$PATH
+
 
 as well as `Quast <http://quast.bioinf.spbau.ru/manual.html>`__,
 software for evaluating the assembly against the known reference: ::

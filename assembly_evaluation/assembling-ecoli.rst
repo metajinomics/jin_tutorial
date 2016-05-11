@@ -216,3 +216,5 @@ Take your assembled genome, and:
 
 See :doc:`running-command-line-blast` for the basics.
 Hint -- you'll need to format your assembly as a BLAST database.
+
+Detail about Quast http://quast.bioinf.spbau.ru/manual.html

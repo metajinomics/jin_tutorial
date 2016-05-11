@@ -79,7 +79,7 @@ Looking at the assembly
 
 Run QUAST::
 
-   ~/quast-3.0/quast.py spades.d/scaffolds.fasta -o report
+   ~/quast-4.0/quast.py spades.d/scaffolds.fasta -o report
 
 and then look at the report::
 
@@ -161,7 +161,7 @@ assembly with QUAST::
 
    cp spades.d/scaffolds.fasta spades-assembly.fa
    cp megahit_out/final.contigs.fa megahit-assembly.fa
-   ~/quast-3.0/quast.py -R ecoliMG1655.fa spades-assembly.fa \
+   ~/quast-4.0/quast.py -R ecoliMG1655.fa spades-assembly.fa \
             megahit-assembly.fa -o report
 
 Let's look at the report! ::
@@ -187,7 +187,7 @@ Let's try that, using ``extract-long-sequences.py`` from `khmer
 
 and then re-run QUAST and put the output in ``report-noref/report.txt``::
 
-   ~/quast-3.0/quast.py -R spades-long.fa spades-assembly.fa \
+   ~/quast-4.0/quast.py -R spades-long.fa spades-assembly.fa \
             megahit-assembly.fa -o report-noref
 
 When you look at the report, ::

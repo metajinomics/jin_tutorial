@@ -55,8 +55,8 @@ as well as `Quast <http://quast.bioinf.spbau.ru/manual.html>`__,
 software for evaluating the assembly against the known reference: ::
 
    cd
-   curl -L http://sourceforge.net/projects/quast/files/quast-3.0.tar.gz/download > quast-3.0.tar.gz
-   tar xvf quast-3.0.tar.gz
+   wget https://downloads.sourceforge.net/project/quast/quast-4.0.tar.gz
+   tar -xzf quast-4.0.tar.gz
 
 Getting the data
 ================
@@ -134,7 +134,7 @@ Download the true reference genome::
 
 and run QUAST again::
 
-   ~/quast-3.0/quast.py -R ecoliMG1655.fa spades.d/scaffolds.fasta -o report
+   ~/quast-4.0/quast.py -R ecoliMG1655.fa spades.d/scaffolds.fasta -o report
 
 Note that here we're looking at *all* the assemblies we've generated.
 

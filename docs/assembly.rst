@@ -8,6 +8,10 @@
 
 프로그램 설치
 -------------
+screed 설치
+::
+   pip install screed
+
 .. clean up previous installs if we're re-running this...
 
 .. ::
@@ -22,11 +26,7 @@ Install `khmer <http://khmer.readthedocs.org/>`__:
 
 ::
 
-    cd /usr/local/share
-    git clone https://github.com/ged-lab/khmer.git
-    cd khmer
-    git checkout v1.1
-    make install
+    pip install khmer
 
 
 `Trimmomatic <http://www.usadellab.org/cms/?page=trimmomatic>`__ 설치 :
@@ -59,134 +59,78 @@ Install `khmer <http://khmer.readthedocs.org/>`__:
     ./configure && make && make install
 
 
-In each of these cases, we're downloading the software -- you can use
-google to figure out what each package is and does if we don't discuss
-it below.  We're then unpacking it, sometimes compiling it (which we
-can discuss later), and then installing it for general use.
+각각의 경우에서 필요한 프로그램을 다운받았다. 프로그램의 자세한 내용이 알고 싶다면 검색을 통해 쉽게 알 수 있으며 이곳에서 추가 설명을 하지 않겠다. 다운로드 받은 프로그램은 압축을 풀고 필요에 따라서 컴파일 하기도 하였다. 그리고 설치하였다. 
 
 
-폴더 생성 및 데이터 가져오기  
+작업 폴더 만들기   
 ---------------------------------------------
-Put your data in /mnt/data.
+작업을 할 폴더를 만들자 
 
 ::
  
     cd /mnt
-    mkdir work 
-    cd work
-    ln -fs /mnt/data/*.fastq.gz .
+    mkdir assembly
+    cd assembly
  
-Trim Your Data
+데이터 링크하기
 ---------------
-
-::
- 
-    cd /mnt/work
-    python /usr/local/share/khmer/sandbox/write-trimmomatic.py > trim.sh 
-    more trim.sh
-
-If it looks like it contains the right commands, you can run it by doing 
+이 튜토리얼에서 사용한 데이터는 Sharon et al. 2013 에서 가져왔다. 유아 대변 샘플 두개이다. 
 
 ::
 
-    bash trim.sh
-
-.. note::  This is a prime example of scripting to make your life much easier and less error prone. Take a look at this file sometime – ‘more /usr/local/share/khmer/sandbox/write-trimmomatic.py’ – to get some idea of how this works.
-
-Quality Trim Each Pair of Files
---------------------------------
-
-After you run this, you should have a bunch of ‘.pe.fq.gz’ files and a bunch of ‘.se.fq.gz’ files. The former are files that contain paired, interleaved sequences; the latter contain single-ended, non-interleaved sequences.
-
-Next, for each of these files, run::
-
-gunzip -c <filename> | fastq_quality_filter -Q33 -q 30 -p 50 | gzip -9c > <filename>.qc.fq.gz 
-
-This uncompresses each file, removes poor-quality sequences, and then recompresses it. Note that (following Short-read quality evaluation) you can also trim to a specific length by putting in a ‘fastx_trimmer -Q33 -l 70 |‘ into the mix.
-
-If fastq_quality_filter complains about invalid quality scores, try removing the -Q33 in the command; Illumina has blessed us with multiple quality score encodings.
-
-위의 과정을 자동화 하기 
----------------------
-
-This step can be automated with a ‘for’ loop at the shell prompt. Try:
-
-::
-
-    for i in *.pe.fq.gz *.se.fq.gz
-    do
-        echo working with $i
-        newfile="$(basename $i .fq.gz)"
-        gunzip -c $i | fastq_quality_filter -Q33 -q 30 -p 50 | gzip -9c > "${newfile}.qc.fq.gz"
-    done
-What this loop does is:
-
-* for every file ending in pe.fq.gz and se.fq.gz,
-* print out a message with the filename,
-* construct a name ‘newfile’ that omits the trailing .fq.gz
-* uncompresses the original file, passes it through fastq, recompresses it, and saves it as ‘newfile’.qc.fq.gz
-
-Extracting Paired Ends From The Interleaved Files
---------------------------------------------------
-
-The fastx utilities that we’re using to do quality trimming aren’t paired-end aware; they’re removing individual sequences. Because the pe files are interleaved, this means that there may now be some orphaned sequences in there. Downstream, we will want to pay special attention to the remaining paired sequences, so we want to separate out the pe and se files. How do we go about that? Another script, of course!
-
-The khmer script ‘extract-paired-reads.py’ does exactly that. You run it on an interleaved file that may have some orphans, and it produces .pe and .se files afterwards, containing pairs and orphans respectively.
-
-To run it on all of the pe qc files, do:
-
-::
-
-    for i in *.pe.qc.fq.gz
-    do
-        extract-paired-reads.py $i
-    done
-
-파일 이름 바꾸기 
+   ln -fs /data/SRR49206?_?.fastq.gz .
+이 과정이 데이터를 /mnt/assembly 폴더로 링크를 만들어 준다. 
+   
+데이터를 트림하기 
 ---------------
-I’m a fan of keeping the files named somewhat sensibly, and keeping them compressed. Let’s do some mass renaming:
-
-::
-    
-    for i in *.pe.qc.fq.gz.pe 
-    do
-        echo working on PE file $i
-        newfile="$(basename $i .pe.qc.fq.gz.pe).pe.qc.fq"
-        rm $(basename $i .pe)
-        mv $i $newfile
-        gzip $newfile
-    done
-
-and also some mass combining:
-
+첫번째 데이터 트림하기 (20분 가량 소요)
 ::
 
-    for i in *.pe.qc.fq.gz.se
-    do
-        echo working on SE file $i
-        otherfile="$(basename $i .pe.qc.fq.gz.se).se.qc.fq.gz"
-        gunzip -c $otherfile > combine
-        cat $i >> combine
-        rm -f $otherfile
-        gzip -c combine > $otherfile
-        rm $i combine
-    done
+   mkdir trim
+   cd trim
+   
+   java -jar /usr/local/bin/trimmomatic-0.30.jar PE ../SRR492065_?.fastq.gz s1_pe s1_se s2_pe s2_se ILLUMINACLIP:/usr/local/share/adapters/TruSeq3-PE.fa:2:30:10
+   
+   /usr/local/share/khmer/scripts/interleave-reads.py s?_pe > combined.fq
+   
+   fastq_quality_filter -Q33 -q 30 -p 50 -i combined.fq > combined-trim.fq 
+   fastq_quality_filter -Q33 -q 30 -p 50 -i s1_se > s1_se.trim
+   fastq_quality_filter -Q33 -q 30 -p 50 -i s2_se > s2_se.trim
+   /usr/local/share/khmer/scripts/extract-paired-reads.py combined-trim.fq
+   
+   gzip -9c combined-trim.fq.pe > ../SRR492065.pe.qc.fq.gz
+   gzip -9c combined-trim.fq.se s1_se.trim s2_se.trim > ../SRR492065.se.qc.fq.gz
 
-then make it hard to delete the files you just created
+   cd ../
+   rm -fr trim
 
+두번째 데이터 (20분 가량 소요)
 ::
 
-    chmod u-w *.qc.fq.gz
+   mkdir trim
+   cd trim
+   
+   java -jar /usr/local/bin/trimmomatic-0.30.jar PE ../SRR492066_?.fastq.gz s1_pe s1_se s2_pe s2_se ILLUMINACLIP:/usr/local/share/adapters/TruSeq3-PE.fa:2:30:10
 
-Done!  Now you have two files: SRR606249-extract.pe.qc.fq.gz, SRR606249-extract.se.qc.fq.gz.
+   /usr/local/share/khmer/scripts/interleave-reads.py s?_pe > combined.fq
+   
+   fastq_quality_filter -Q33 -q 30 -p 50 -i combined.fq > combined-trim.fq
+   fastq_quality_filter -Q33 -q 30 -p 50 -i s1_se > s1_se.trim
+   fastq_quality_filter -Q33 -q 30 -p 50 -i s2_se > s2_se.trim
+   /usr/local/share/khmer/scripts/extract-paired-reads.py combined-trim.fq
+   
+   gzip -9c combined-trim.fq.pe > ../SRR492066.pe.qc.fq.gz
+   gzip -9c combined-trim.fq.se s1_se.trim s2_se.trim > ../SRR492066.se.qc.fq.gz
+   
+   cd ../
+   rm -fr trim
 
-The '.pe' file are interleaved paired-end; you can take a look at them like so 
+이제 다음 4개의 파일을 볼 수 있을 것이다. (SRR492065.pe.qc.fq.gz, SRR492065.se.qc.fq.gz, SRR492066.pe.qc.fq.gz, and SRR492066.se.qc.fq.gz) 확장자 .pe 파일은 interleave 된 paired-end 파일이다. 아래와 같이 하면 파일의 첫 부분을 볼 수 있다. 
+::
 
-
-The '.se' files is a single-ended file, where the reads have been
-orphaned because we discarded stuff.
-
-All TWO files are in FASTQ format.
+   gunzip -c SRR492065.pe.qc.fq.gz | head
+   
+다른 두개의 파일은 single-end파일이다. 트림과정에서 짝을 잃어버린 것들이다. 모든 파일은 FASTQ 포멧이다.  
 
 ----
 

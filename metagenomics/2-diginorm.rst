@@ -1,3 +1,38 @@
+================================
+2. Running digital normalization
+================================
+
+.. shell start
+
+.. note::
+
+   Make sure you're running in screen!
+
+Start with the QC'ed files from :doc:`1-quality` or copy them into a
+working directory; 
+
+Run a First Round of Digital Normalization
+------------------------------------------
+
+Normalize everything to a coverage of 20, starting with the (more valuable)
+PE reads; keep pairs using '-p'
+
+::
+
+   cd /mnt/work
+   normalize-by-median.py -p -k 20 -C 20 -N 4 -x 1e9 --savetable normC20k20.kh  *.pe.qc.fq.gz
+
+and continuing into the (less valuable but maybe still useful) SE reads
+
+::
+
+   normalize-by-median.py -C 20 --loadtable normC20k20.kh --savetable normC20k20.kh *.se.qc.fq.gz
+
+This produces a set of '.keep' files, as well as a normC20k20.kh
+database file.
+
+Error-trim Our Data
+--------------------
 
 Use 'filter-abund' to trim off any k-mers that are abundance-1 in
 high-coverage reads.  The -V option is used to make this work better
